@@ -16,7 +16,7 @@ def calculate_terzaghi(c, phi, gamma, B, Df, q=None):
     c : float
         Cohesion of soil (kPa).
     phi : float
-        Friction angle of soil (degrees).
+        Friction angle of soil (degrees). Should be between 0 and 50 degrees for typical soils.
     gamma : float
         Unit weight of soil (kN/m³).
     B : float
@@ -31,7 +31,25 @@ def calculate_terzaghi(c, phi, gamma, B, Df, q=None):
     -------
     q_ult : float
         Ultimate bearing capacity (kPa).
+
+    Raises
+    ------
+    ValueError
+        If phi is outside the valid range (0 to 50 degrees) or if any other input is invalid.
     """
+    # Input validation
+    if not (0 <= phi <= 50):
+        raise ValueError(f"Friction angle phi must be between 0 and 50 degrees (got {phi}).")
+    if gamma <= 0:
+        raise ValueError(f"Unit weight gamma must be positive (got {gamma}).")
+    if B <= 0:
+        raise ValueError(f"Footing width B must be positive (got {B}).")
+    if Df < 0:
+        raise ValueError(f"Foundation depth Df cannot be negative (got {Df}).")
+    # Cohesion can be zero or positive (cohesionless soil)
+    if c < 0:
+        raise ValueError(f"Cohesion c cannot be negative (got {c}).")
+
     # Convert phi from degrees to radians for trigonometric functions
     phi_rad = math.radians(phi)
 
